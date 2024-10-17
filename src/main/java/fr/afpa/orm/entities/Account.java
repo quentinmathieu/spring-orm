@@ -28,6 +28,8 @@ import jakarta.persistence.CascadeType;
  * Plus d'informations sur les entités -> https://gayerie.dev/epsi-b3-orm/javaee_orm/jpa_entites.html
  * Attention de bien choisir les types en fonction de ceux du script SQL.
  */
+@Entity
+@Table(name="account")
 public class Account {
     /**
      * Identifiant unique du compte
@@ -48,7 +50,7 @@ public class Account {
      * Tutoriel présentant l'utilisation d'une telle association : https://koor.fr/Java/TutorialJEE/jee_jpa_many_to_one.wp
      */
     
-    @Column(name = "owner")
+    @JoinColumn(name = "owner")
     @ManyToOne(targetEntity = Client.class, cascade = { CascadeType.PERSIST })
     private BigDecimal owner;
     

@@ -28,6 +28,8 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * TODO ajouter la/les annotations nécessaires pour faire de "AccountRestController" un contrôleur de REST API
  */
+@RestController
+@RequestMapping("/api/accounts")
 public class AccountRestController {
     /** 
      * TODO implémenter un constructeur
@@ -35,6 +37,11 @@ public class AccountRestController {
      * TODO injecter {@link AccountRepository} en dépendance par injection via le constructeur
      * Plus d'informations -> https://keyboardplaying.fr/blogue/2021/01/spring-injection-constructeur/
      */
+    private AccountRepository accountRepository;
+
+    public AccountRestController(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
 
 
     /**
@@ -42,21 +49,19 @@ public class AccountRestController {
      *
      * Attention, il manque peut être une annotation :)
      */
+    @GetMapping
     public List<Account> getAll() {
-        // TODO récupération des compte provenant d'un repository
-       
-        // TODO renvoyer les objets de la classe "Account"
-        return null;
+        return (List<Account>) accountRepository.findAll(); 
     }
 
     /**
      * TODO implémenter une méthode qui traite les requêtes GET avec un identifiant "variable de chemin" et qui retourne les informations du compte associé
      * Plus d'informations sur les variables de chemin -> https://www.baeldung.com/spring-pathvariable
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<????> getOne(@PathVariable long id) {
-        // TODO compléter le code
-    }
+    // @GetMapping("/{id}")
+    // public ResponseEntity<????> getOne(@PathVariable long id) {
+    //     // TODO compléter le code
+    // }
 
     /**
      * TODO implémenter une méthode qui traite les requêtes POST
@@ -66,8 +71,9 @@ public class AccountRestController {
      **/
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ???? create(@RequestBody Account account) {
-        // TODO compléter le code
+    public Account create(@RequestBody Account account) {
+        accountRepository.save(account);
+        return account;
     }
 
     /**
