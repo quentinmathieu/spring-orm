@@ -8,14 +8,17 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
@@ -48,14 +51,15 @@ public class Account {
     private BigDecimal balance;
     
     @JoinColumn(name = "owner")
+    @JsonIgnoreProperties({"accounts"})
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(targetEntity = Client.class, cascade = { CascadeType.MERGE })
     private Client owner;
     
     public Account(BigDecimal balance, LocalDateTime creationTime, Client owner) {
-        this.creationTime = creationTime; 
+        this.creationTime = creationTime;
         this.balance = balance;
-        this.owner = owner;
+        this.setOwner(owner);
     }
     public Account() {
         // empty for ORM
@@ -92,7 +96,14 @@ public class Account {
 
     public void setOwner(Client owner) {
         this.owner = owner;
+        owner.addAccount(this);
+    }
+    @Override
+    public String toString() {
+        return "Account [id=" + id + ", creationTime=" + creationTime + ", balance=" + balance + ", owner=" + owner
+                + "]";
     }
 
+    
 
 }

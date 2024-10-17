@@ -1,14 +1,10 @@
 package fr.afpa.orm.web.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,16 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.afpa.orm.FixtureGenerator;
-// import fr.afpa.orm.dto.ClientDto;
 import fr.afpa.orm.entities.Client;
-import fr.afpa.orm.repositories.ClientRepository;
 import fr.afpa.orm.repositories.ClientRepository;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- * TODO ajouter la/les annotations nécessaires pour faire de "ClientRestController" un contrôleur de REST API
- */
+
 @RestController
 @RequestMapping("/clients")
 public class ClientRestController {
@@ -59,16 +50,17 @@ public class ClientRestController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Client create(@RequestBody Client client) {
+        // client.setAccounts(new ArrayList<>());
         clientRepository.save(client);
         return client;
     }
 
+    @SuppressWarnings("unchecked")
     @PutMapping("/{id}")
     public ResponseEntity<Client> update(@PathVariable UUID id, @RequestBody Client client) {
         Optional<Client> oldClient = clientRepository.findById(id);
         if (!oldClient.isPresent()){
             return (ResponseEntity<Client>) ResponseEntity.badRequest();
-
         }
         return ResponseEntity.ok(clientRepository.save(client));
     }

@@ -3,7 +3,6 @@ package fr.afpa.orm;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.List;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -26,7 +25,6 @@ public class FixtureGenerator {
     
     private void generate(int nb){
         String[] names = {"Aaron", "Caitlin", "Mazda", "Bianca", "Brunehilde", "Betsie", "Fabricio", "accessories", "accompaniments", "accouterments", "appliances", "appurtenances", "articles", "attachments", "baggage", "belongings", "contraptions", "contrivances", "devices", "equipage", "facilities", "fittings", "gadgets", "habiliments", "impedimenta", "materiel", "outfit", "paraphernalia", "provisions", "rig", "setup", "shebang", "stock", "store", "stuff", "tackle", "things", "tools", "trappings", "traps", "utensils"};
-        List<Client> clients;
         for (Integer i=0; i<nb; i++){
             Client newClient = clientRepository.save(new Client(names[randInt(names.length-1)], names[randInt(names.length-1)], names[randInt(names.length-1)]+"@gmail.com", this.generateDate()));
             accountRepository.save(new Account(BigDecimal.valueOf(randInt(10000)), generateDateTime(), newClient));

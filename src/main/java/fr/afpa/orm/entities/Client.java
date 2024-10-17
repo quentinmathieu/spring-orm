@@ -2,13 +2,19 @@ package fr.afpa.orm.entities;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,7 +43,8 @@ public class Client {
     @Column(name = "birthdate")
     private LocalDate birthdate;
 
-    @JsonIgnore
+    @Column(name = "accounts")
+    @JsonIgnoreProperties({"owner"})
     @OneToMany(targetEntity = Account.class, mappedBy = "owner")
     private List<Account> accounts;
 
@@ -50,6 +57,7 @@ public class Client {
         this.lastName = lastName;
         this.email = email;
         this.birthdate = birthdate;
+        this.accounts = new ArrayList<>(); 
     }
 
     public UUID getId() {
@@ -98,5 +106,15 @@ public class Client {
 
     public void setAccounts(List<Account> accounts) {
         this.accounts = accounts;
+    }
+
+    public void addAccount(Account account){
+        if (account.getOwner() != this) {
+            System.out.println("OK");
+            account.setOwner(this);
+        }
+        if (!this.accounts.contains(account)){
+            this.getAccounts().add(account);
+        }
     }
 }

@@ -27,9 +27,6 @@ import fr.afpa.orm.repositories.AccountRepository;
 import fr.afpa.orm.repositories.ClientRepository;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- * TODO ajouter la/les annotations nécessaires pour faire de "AccountRestController" un contrôleur de REST API
- */
 @RestController
 @RequestMapping("/accounts")
 public class AccountRestController {
@@ -38,7 +35,7 @@ public class AccountRestController {
 
     public AccountRestController(AccountRepository accountRepository, ClientRepository clientRepository) {
         this.accountRepository = accountRepository;
-        new FixtureGenerator(accountRepository, clientRepository);
+        // new FixtureGenerator(accountRepository, clientRepository);
     }
 
 
@@ -62,12 +59,13 @@ public class AccountRestController {
         return account;
     }
 
+    @SuppressWarnings("unchecked")
     @PutMapping("/{id}")
     public ResponseEntity<Account> update(@PathVariable long id, @RequestBody Account account) {
         Optional<Account> oldAccount = accountRepository.findById(id);
         if (!oldAccount.isPresent()){
+            System.out.println("meh");
             return (ResponseEntity<Account>) ResponseEntity.badRequest();
-
         }
         return ResponseEntity.ok(accountRepository.save(account));
     }
