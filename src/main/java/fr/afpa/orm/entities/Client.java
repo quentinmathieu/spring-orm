@@ -19,44 +19,37 @@ import jakarta.persistence.Table;
 @Table(name="client")
 public class Client {
 
-    /**
-     * Identifiant unique de l'utilisateur
-     * Article présentant l'utilisation d'UUID -> https://www.baeldung.com/java-hibernate-uuid-primary-key
-     */
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-      /**
-     * Prénom du propriétaire
-     */
+
     @Column(name = "first_name")
     private String firstName;
-    /**
-     * Nom du propriétaire
-     */
+
     @Column(name = "last_name")
     private String lastName;
-    /**
-     * Adresse email (unique) du propriétaire
-     */
+
     @Column(name = "email")
     private String email;
-    /**
-     * Date d'anniversaire du prop
-     */
+
     @Column(name = "birthdate")
     private LocalDate birthdate;
 
-    /**
-     * Association de type "OneToMany" : une personne peut avoir plusieurs comptes
-     */
     @JsonIgnore
     @OneToMany(targetEntity = Account.class, mappedBy = "owner")
     private List<Account> accounts;
 
     public Client() {
         // Constructeur vide.
+    }
+
+    public Client(String firstName, String lastName, String email, LocalDate birthdate) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.birthdate = birthdate;
     }
 
     public UUID getId() {

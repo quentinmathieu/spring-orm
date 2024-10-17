@@ -1,8 +1,10 @@
 package fr.afpa.orm.entities;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -18,6 +20,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.persistence.CascadeType;
 
 
@@ -31,32 +35,32 @@ import jakarta.persistence.CascadeType;
 @Entity
 @Table(name="account")
 public class Account {
-    /**
-     * Identifiant unique du compte
-     */
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creationTime")
     private LocalDateTime creationTime;
     
     @Column(name = "balance")
     private BigDecimal balance;
-
-        /**
-     * TODO ajout d'une association de type @ManyToOne : plusieurs comptes différents peuvent être associés à la même personne
-     * 
-     * Tutoriel présentant l'utilisation d'une telle association : https://koor.fr/Java/TutorialJEE/jee_jpa_many_to_one.wp
-     */
     
     @JoinColumn(name = "owner")
-    @ManyToOne(targetEntity = Client.class, cascade = { CascadeType.PERSIST })
-    private BigDecimal owner;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(targetEntity = Client.class, cascade = { CascadeType.MERGE })
+    private Client owner;
     
+    public Account(BigDecimal balance, LocalDateTime creationTime, Client owner) {
+        this.creationTime = creationTime; 
+        this.balance = balance;
+        this.owner = owner;
+    }
     public Account() {
         // empty for ORM
     }
+
 
     public Long getId() {
         return this.id;
@@ -80,6 +84,14 @@ public class Account {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public Client getOwner() {
+        return this.owner;
+    }
+
+    public void setOwner(Client owner) {
+        this.owner = owner;
     }
 
 
