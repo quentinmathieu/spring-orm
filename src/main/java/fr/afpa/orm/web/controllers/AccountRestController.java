@@ -59,23 +59,22 @@ public class AccountRestController {
         return account;
     }
 
-    @SuppressWarnings("unchecked")
     @PutMapping("/{id}")
     public ResponseEntity<Account> update(@PathVariable long id, @RequestBody Account account) {
         Optional<Account> oldAccount = accountRepository.findById(id);
         if (!oldAccount.isPresent()){
             System.out.println("meh");
-            return (ResponseEntity<Account>) ResponseEntity.badRequest();
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(accountRepository.save(account));
     }
 
-    public boolean remove(@PathVariable long id, HttpServletResponse response) {
+    public ResponseEntity<Account> remove(@PathVariable long id) {
         Optional<Account> oldAccount = accountRepository.findById(id);
         if (!oldAccount.isPresent()){
-            return false;
+            return ResponseEntity.badRequest().build();
         }
-        response.setStatus(HttpServletResponse.SC_OK);
-        return true;
+        accountRepository.delete(oldAccount.get());
+        return ResponseEntity.ok(oldAccount.get());
     }
 }

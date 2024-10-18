@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.afpa.orm.entities.Account;
 import fr.afpa.orm.entities.Client;
 import fr.afpa.orm.repositories.ClientRepository;
 import jakarta.servlet.http.HttpServletResponse;
@@ -55,24 +56,22 @@ public class ClientRestController {
         return client;
     }
 
-    @SuppressWarnings("unchecked")
     @PutMapping("/{id}")
     public ResponseEntity<Client> update(@PathVariable UUID id, @RequestBody Client client) {
         Optional<Client> oldClient = clientRepository.findById(id);
         if (!oldClient.isPresent()){
-            return (ResponseEntity<Client>) ResponseEntity.badRequest();
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(clientRepository.save(client));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> remove(@PathVariable UUID id, HttpServletResponse response) {
+    public ResponseEntity<Client> remove(@PathVariable UUID id) {
         Optional<Client> oldClient = clientRepository.findById(id);
         if (!oldClient.isPresent()){
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return null;
+            return ResponseEntity.badRequest().build();
         }
         clientRepository.delete(oldClient.get());
-        return ResponseEntity.ok(true);
+        return ResponseEntity.ok(oldClient.get());
     }
 }

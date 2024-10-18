@@ -51,7 +51,6 @@ public class Account {
     private BigDecimal balance;
     
     @JoinColumn(name = "owner")
-    @JsonIgnoreProperties({"accounts"})
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(targetEntity = Client.class, cascade = { CascadeType.MERGE })
     private Client owner;
